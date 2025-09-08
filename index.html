@@ -1,0 +1,3010 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QLQestacomida - Menú Digital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #000;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 100%;
+            padding: 15px;
+            margin: 0 auto;
+        }
+        /* Pantalla de Bienvenida */
+        #welcome-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://i.imgur.com/6h0eE0o.jpeg') no-repeat center center;
+            background-size: cover;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+        }
+        .welcome-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 5vh;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .welcome-logo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin-bottom: 25px;
+            border: 5px solid #ff8c00; /* Cambiado de verde a naranja */
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.7); /* Cambiado de verde a naranja */
+            animation: pulse 2s infinite alternate;
+            background: white;
+            padding: 10px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .welcome-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .welcome-title {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            animation: slideDown 1s ease-out;
+        }
+        .welcome-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            animation: slideUp 1s ease-out;
+        }
+        .datetime {
+            font-size: 1.3rem;
+            margin-bottom: 35px;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 2s ease-out;
+        }
+        .btn {
+            background: linear-gradient(to right, #cc5500, #ff8c00); /* Cambiado de verde a naranja */
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            animation: bounce 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            animation: none;
+        }
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes pulse {
+            from { transform: scale(1); box-shadow: 0 0 20px rgba(255, 140, 0, 0.7); } /* Cambiado de verde a naranja */
+            to { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 140, 0, 0.9); } /* Cambiado de verde a naranja */
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes shine {
+            from { transform: translateX(-100%) rotate(30deg); }
+            to { transform: translateX(100%) rotate(30deg); }
+        }
+        /* Pantalla del Menú */
+        #menu-screen {
+            display: none;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://i.imgur.com/ZsXOsCp.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px 5px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #ff8c00; /* Cambiado de verde a naranja */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #ff8c00; /* Cambiado de verde a naranja */
+            background: white;
+            padding: 5px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .restaurant-name {
+            font-size: 1.8rem;
+            color: #fff;
+        }
+        .tasa-header {
+            text-align: center;
+            padding: 5px 0;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 0.9rem;
+            width: 100%;
+            border-top: 1px solid #333;
+            margin-top: 5px;
+        }
+        .categories-container {
+            position: fixed;
+            top: 125px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 99;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 5px 15px;
+            scrollbar-width: thin;
+        }
+        .category-btn {
+            background: rgba(204, 85, 0, 0.2); /* Cambiado de verde a naranja */
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            border: none;
+            padding: 8px 16px;
+            margin-right: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .category-btn.active {
+            background: linear-gradient(to right, #cc5500, #ff8c00); /* Cambiado de verde a naranja */
+            color: white;
+        }
+        /* Animaciones para botones de categoría */
+        .category-btn {
+            transition: all 0.3s ease;
+        }
+        .category-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255, 140, 0, 0.3); /* Cambiado de verde a naranja */
+        }
+        .category-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Barra de búsqueda */
+        .search-container {
+            position: fixed;
+            top: 175px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 98;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #222;
+            border-radius: 30px;
+            padding: 8px 15px;
+            border: 2px solid #ff8c00; /* Cambiado de verde a naranja */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        .search-box:focus-within {
+            border-color: #ff8c00; /* Cambiado de verde a naranja */
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5); /* Cambiado de verde a naranja */
+            transform: translateY(-2px);
+        }
+        .search-icon {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            padding: 5px 0;
+        }
+        .search-input::placeholder {
+            color: #888;
+        }
+        .clear-search {
+            color: #ff4757;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            display: none;
+            transition: all 0.2s ease;
+        }
+        .clear-search:hover {
+            background: rgba(255, 71, 87, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 240px; /* Aumentado para dar espacio a la barra de búsqueda */
+            padding: 15px;
+        }
+        .product {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(255, 140, 0, 0.4); /* Cambiado de verde a naranja */
+        }
+        .product-image-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #111;
+        }
+        .product-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+        .product:hover .product-image {
+            transform: scale(1.05);
+        }
+        .product-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+        }
+        .product-description {
+            font-size: 0.9rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            flex-grow: 1;
+        }
+        .product-price {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: #cc5500; /* Cambiado de verde a naranja */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .quantity-btn:hover {
+            background: #ff8c00; /* Cambiado de verde a naranja */
+            transform: scale(1.1);
+        }
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+        .quantity {
+            margin: 0 10px;
+            color: white;
+            font-weight: bold;
+        }
+        /* Estilos para el selector de sabores de empanadas */
+        .flavor-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(204, 85, 0, 0.1); /* Cambiado de verde a naranja */
+            border-radius: 10px;
+            border: 1px solid #cc5500; /* Cambiado de verde a naranja */
+        }
+        .flavor-combo {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .flavor-combo-title {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .flavor-combo-title i {
+            color: #fff;
+        }
+        .empanada-selector {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+        .empanada-title {
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .flavor-dropdown {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #222;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .flavor-dropdown:focus {
+            outline: none;
+            border-color: #ff8c00; /* Cambiado de verde a naranja */
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.5); /* Cambiado de verde a naranja */
+        }
+        .flavor-dropdown option {
+            background: #222;
+            color: #fff;
+            padding: 8px;
+        }
+        /* Estilos para el selector de ingredientes de pizza */
+        .ingredient-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(204, 85, 0, 0.1); /* Cambiado de verde a naranja */
+            border-radius: 10px;
+            border: 1px solid #cc5500; /* Cambiado de verde a naranja */
+        }
+        .ingredient-combo {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .ingredient-combo-title {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ingredient-combo-title i {
+            color: #fff;
+        }
+        .ingredient-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .ingredient-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ingredient-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff8c00; /* Cambiado de verde a naranja */
+            border-radius: 4px;
+            background-color: transparent;
+            position: relative;
+            cursor: pointer;
+        }
+        .ingredient-checkbox:checked {
+            background-color: #ff8c00; /* Cambiado de verde a naranja */
+        }
+        .ingredient-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .ingredient-label {
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        /* Estilos para el selector de personalización de hamburguesas y paninis */
+        .customization-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(204, 85, 0, 0.1); /* Cambiado de verde a naranja */
+            border-radius: 10px;
+            border: 1px solid #cc5500; /* Cambiado de verde a naranja */
+        }
+        .customization-combo {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .customization-combo-title {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .customization-combo-title i {
+            color: #fff;
+        }
+        .customization-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .customization-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .customization-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff8c00; /* Cambiado de verde a naranja */
+            border-radius: 4px;
+            background-color: transparent;
+            position: relative;
+            cursor: pointer;
+        }
+        .customization-checkbox:checked {
+            background-color: #ff8c00; /* Cambiado de verde a naranja */
+        }
+        .customization-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .customization-label {
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        /* Estilo para opciones deshabilitadas */
+        .customization-option.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Estilos para el selector de contornos de pollo */
+        .sides-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(204, 85, 0, 0.1); /* Cambiado de verde a naranja */
+            border-radius: 10px;
+            border: 1px solid #cc5500; /* Cambiado de verde a naranja */
+        }
+        .sides-combo {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .sides-combo-title {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sides-combo-title i {
+            color: #fff;
+        }
+        .sides-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .sides-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sides-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff8c00; /* Cambiado de verde a naranja */
+            border-radius: 4px;
+            background-color: transparent;
+            position: relative;
+            cursor: pointer;
+        }
+        .sides-checkbox:checked {
+            background-color: #ff8c00; /* Cambiado de verde a naranja */
+        }
+        .sides-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .sides-label {
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        /* Estilo para opciones deshabilitadas en contornos */
+        .sides-option.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Carrito flotante */
+        .cart-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to right, #cc5500, #ff8c00); /* Cambiado de verde a naranja */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            z-index: 90;
+            transition: all 0.3s ease;
+        }
+        .cart-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+        }
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+        /* Modal del carrito - MODIFICADO para mostrar contenido en la parte superior */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px 0;
+            justify-content: flex-start; /* Cambiado de center a flex-start */
+        }
+        .cart-content {
+            background: #111;
+            width: 95%;
+            max-width: 600px;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #cc5500; /* Cambiado de verde a naranja */
+            display: flex;
+            flex-direction: column;
+            animation: modalAppear 0.5s ease-out;
+            margin: 20px auto; /* Añadido margen superior */
+        }
+        @keyframes modalAppear {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #cc5500; /* Cambiado de verde a naranja */
+            padding-bottom: 10px;
+        }
+        .cart-title {
+            color: #fff;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cart-title i {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cart-items {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            animation: itemAppear 0.3s ease-out;
+        }
+        @keyframes itemAppear {
+            from { 
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .cart-item-info {
+            flex: 1;
+        }
+        .cart-item-name {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-item-name i {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 0.9rem;
+        }
+        .cart-item-details {
+            color: #ffffff;
+            font-size: 0.85rem;
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+        .cart-item-price {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .cart-item-quantity {
+            color: #fff;
+            font-weight: bold;
+            white-space: nowrap;
+            margin: 0 15px;
+            background: #cc5500; /* Cambiado de verde a naranja */
+            padding: 5px 10px;
+            border-radius: 15px;
+            min-width: 30px;
+            text-align: center;
+        }
+        .cart-item-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-item {
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .remove-item:hover {
+            transform: scale(1.1);
+            background: #ff6b81;
+        }
+        .cart-summary {
+            background: rgba(204, 85, 0, 0.2); /* Cambiado de verde a naranja */
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .cart-total {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #fff;
+            font-weight: bold;
+            background: linear-gradient(to right, #cc5500, #ff8c00); /* Cambiado de verde a naranja */
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .tasa-info {
+            text-align: center;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .customer-form {
+            display: grid;
+            gap: 10px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-group label i {
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        .form-group input {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #222;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff8c00; /* Cambiado de verde a naranja */
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.5); /* Cambiado de verde a naranja */
+        }
+        .order-btn {
+            background: linear-gradient(to right, #cc5500, #ff8c00); /* Cambiado de verde a naranja */
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .order-btn:hover {
+            background: linear-gradient(to right, #ff8c00, #cc5500); /* Cambiado de verde a naranja */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        .order-btn:active {
+            transform: translateY(0);
+        }
+        .close-cart {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .close-cart:hover {
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        @media (min-width: 768px) {
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .empanadas-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+        }
+        .cart-items-container {
+            /* Eliminado max-height y overflow para que sea plano */
+        }
+        .cart-modal-content {
+            display: flex;
+            flex-direction: column;
+        }
+        .empty-cart-message {
+            text-align: center;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            padding: 20px;
+            font-style: italic;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .empty-cart-message i {
+            font-size: 3rem;
+            color: #cc5500; /* Cambiado de verde a naranja */
+        }
+        /* Botón "Seguir comprando" */
+        .continue-shopping-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .continue-shopping-btn:hover {
+            background: #777;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        .continue-shopping-btn:active {
+            transform: translateY(0);
+        }
+        /* Estilos para el menú ejecutivo del día */
+        .daily-menu {
+            background: rgba(204, 85, 0, 0.2); /* Cambiado de verde a naranja */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ff8c00; /* Cambiado de verde a naranja */
+            text-align: center;
+        }
+        .daily-menu-title {
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .daily-menu-title i {
+            color: #fff;
+        }
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        @media (min-width: 768px) {
+            .menu-options {
+                flex-direction: row;
+            }
+            .menu-options .product {
+                flex: 1;
+            }
+        }
+        /* Estilos para la categoría VIP */
+        .vip-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #ffd700, #ff8c00, #ff4500);
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 101;
+            animation: vipPulse 2s infinite;
+            display: none;
+        }
+        @keyframes vipPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        /* Estilos para el mensaje flotante de VIP */
+        .vip-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff8c00, #ff4500);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            animation: floatMessage 0.5s ease-out, fadeOutMessage 2s ease-in 3s forwards;
+            max-width: 80%;
+        }
+        @keyframes floatMessage {
+            from { 
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOutMessage {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        /* Mensaje cuando no hay resultados */
+        .no-results {
+            text-align: center;
+            color: #ff8c00; /* Cambiado de verde a naranja */
+            padding: 40px 20px;
+            font-size: 1.2rem;
+            font-style: italic;
+            display: none;
+        }
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #cc5500; /* Cambiado de verde a naranja */
+        }
+        
+        /* Estilo para mostrar la categoría del producto en los resultados de búsqueda */
+        .product-category-tag {
+            display: inline-block;
+            background: rgba(204, 85, 0, 0.3);
+            color: #ff8c00;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador VIP -->
+    <div class="vip-indicator" id="vip-indicator">
+        <i class="fas fa-crown"></i> Menu VIP ACTIVADO
+    </div>
+    <!-- Pantalla de Bienvenida -->
+    <div id="welcome-screen">
+        <div class="welcome-content">
+            <h1 class="welcome-title">Bienvenidos a</h1>
+            <div class="welcome-logo">
+                <img src="https://i.imgur.com/3znKhjB.jpeg" alt="QLQestacomida Logo">
+            </div>
+            <div class="welcome-subtitle">Disfruta de los mejores sabores</div>
+            <div class="datetime" id="datetime">Cargando fecha y hora...</div>
+            <button class="btn" id="view-menu-btn">Ver Menú</button>
+        </div>
+    </div>
+    <!-- Pantalla del Menú -->
+    <div id="menu-screen">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo" id="menu-logo">
+                    <img src="https://i.imgur.com/3znKhjB.jpeg" alt="QLQestacomida Logo">
+                </div>
+                <h1 class="restaurant-name">QLQestacomida</h1>
+            </div>
+            <div class="tasa-header" id="tasa-header">
+                Tasa BCV: <span id="tasa-value">152.82</span> Bs/$ - Actualizada a <span id="fecha-actual"></span>
+            </div>
+        </div>
+        <div class="categories-container">
+            <div class="categories">
+			    <!-- Botón VIP oculto inicialmente -->
+                <button class="category-btn" id="vip-category-btn" data-category="vip" style="display: none;">
+                    <i class="fas fa-crown"></i> Menu VIP
+                </button>
+                <button class="category-btn active" data-category="desayunos"><i class="fas fa-egg"></i> Desayunos</button>
+                <button class="category-btn" data-category="ejecutivo"><i class="fas fa-utensils"></i> Menú Ejecutivo</button>
+                <button class="category-btn" data-category="hamburguesas"><i class="fas fa-hamburger"></i> Hamburguesas</button>
+                <button class="category-btn" data-category="pollo"><i class="fas fa-drumstick-bite"></i> Pollos</button>
+                <button class="category-btn" data-category="especiales"><i class="fas fa-star"></i> Especiales</button>
+                <!-- Eliminada categoría de golosinas -->
+                <button class="category-btn" data-category="cafe"><i class="fas fa-coffee"></i> Café</button>
+                <button class="category-btn" data-category="bebidas"><i class="fas fa-glass-whiskey"></i> Bebidas</button>
+				<button class="category-btn" data-category="postre"><i class="fas fa-ice-cream"></i> Postre</button>
+            </div>
+        </div>
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="search-input" placeholder="Buscar productos en todo el menú...">
+                <button class="clear-search" id="clear-search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="products" id="products-container">
+                <!-- Los productos se cargarán dinámicamente con JavaScript -->
+            </div>
+            <!-- Mensaje cuando no hay resultados -->
+            <div class="no-results" id="no-results">
+                <i class="fas fa-search"></i>
+                <div>No se encontraron productos con ese nombre</div>
+                <div>Intenta con otra búsqueda</div>
+            </div>
+        </div>
+        <!-- Botón de carrito flotante -->
+        <div class="cart-btn" id="cart-btn">
+            <i class="fas fa-shopping-cart"></i>
+            <div class="cart-count" id="cart-count">0</div>
+        </div>
+        <!-- Modal del carrito -->
+        <div class="cart-modal" id="cart-modal">
+            <div class="cart-content cart-modal-content">
+                <div class="cart-header">
+                    <h2 class="cart-title"><i class="fas fa-receipt"></i> Resumen del Pedido</h2>
+                    <button class="close-cart" id="close-cart">&times;</button>
+                </div>
+                <div class="cart-items cart-items-container" id="cart-items">
+                    <!-- Los items del carrito se cargarán aquí -->
+                </div>
+                <div class="cart-summary">
+                    <div class="cart-total" id="cart-total">
+                        <i class="fas fa-dollar-sign"></i> Total: $0.00 / Bs 0.00
+                    </div>
+                    <div class="tasa-info" id="tasa-info">
+                        <i class="fas fa-exchange-alt"></i> Tasa BCV: 152.82 - Actualizada a <span id="tasa-fecha"></span>
+                    </div>
+                </div>
+                <form class="customer-form" id="customer-form">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Nombre</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Teléfono</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address"><i class="fas fa-map-marker-alt"></i> Entrega en (Piso / Consultorio / Mesa)</label>
+                        <input type="text" id="address" placeholder="Ej: Piso 1, Edificio Principal , Consultorio 302, Mesa 2" required>
+                    </div>
+                    <button type="submit" class="order-btn"><i class="fab fa-whatsapp"></i> Realizar Pedido por WhatsApp</button>
+                    <button type="button" class="continue-shopping-btn" id="continue-shopping-btn"><i class="fas fa-arrow-left"></i> Seguir comprando</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Tasa de cambio (modificable)
+        const tasaBCV = 152.82;
+        // Elementos DOM
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const menuScreen = document.getElementById('menu-screen');
+        const viewMenuBtn = document.getElementById('view-menu-btn');
+        const datetimeElement = document.getElementById('datetime');
+        const fechaActualElement = document.getElementById('fecha-actual');
+        const tasaValueElement = document.getElementById('tasa-value');
+        const tasaHeaderElement = document.getElementById('tasa-header');
+        const productsContainer = document.getElementById('products-container');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCart = document.getElementById('close-cart');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const cartCount = document.getElementById('cart-count');
+        const customerForm = document.getElementById('customer-form');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const tasaInfoElement = document.getElementById('tasa-info');
+        const tasaFechaElement = document.getElementById('tasa-fecha');
+        const continueShoppingBtn = document.getElementById('continue-shopping-btn');
+        const menuLogo = document.getElementById('menu-logo');
+        const vipCategoryBtn = document.getElementById('vip-category-btn');
+        const vipIndicator = document.getElementById('vip-indicator');
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const noResultsElement = document.getElementById('no-results');
+        // Variables para controlar la categoría VIP
+        let vipEnabled = false;
+        let clickCount = 0;
+        let lastClickTime = 0;
+        // Carrito
+        let cart = [];
+        // Sabores disponibles para empanadas
+        const empanadaFlavors = [
+            "Carne mechada", 
+            "Queso", 
+            "Pollo", 
+            "Capresa", 
+            "Jamón y Queso", 
+            "Catira", 
+            "Pelua", 
+            "Americana"
+        ];
+        // Ingredientes extras para pizza
+        const pizzaIngredients = [
+            "Maíz", 
+            "Cebolla", 
+            "Pimentón", 
+            "Bacon"
+        ];
+        // Opciones de personalización para hamburguesas, Club House y Panini
+        const customizationOptions = [
+            "Con TODO",
+            "Sin Cebolla",
+            "Sin Tomate",
+            "Sin Mostaza", 
+            "Sin Mayonesa",
+            "Sin Salsa Tomate",
+            "Sin Lechuga"
+        ];
+        // Opciones de contornos para pollo
+        const sidesOptions = [
+            "Yuca Sancochada",
+            "Yuca Frita",
+            "Papas Fritas",
+            "Ensalada Cesar",
+            "Ensalada Rallada"
+        ];
+        // Obtener el día de la semana (0: Domingo, 1: Luenes, ..., 6: Sábado)
+        const getDayOfWeek = () => {
+            return new Date().getDay();
+        };
+        // Obtener el nombre del día en español
+        const getDayName = (dayIndex) => {
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            return days[dayIndex];
+        };
+        // Datos del menú ejecutivo por día (ahora incluye sábado y domingo)
+        const menuEjecutivo = {
+            1: { // Lunes
+                name: "Asado Negro",
+                description: "Asado, Arroz, Ensalada Rusa, Sopa de Costilla",
+                price: 10.00,
+                image: "https://i.imgur.com/zQ9WpGo.png"
+            },
+            2: { // Martes
+                name: "Cordon Bleu",
+                description: "Acompañado de papas fritas, ensalada Cesar y Sopa de Lagarto",
+                price: 10.00,
+                image: "https://i.imgur.com/b7pNfQc.jpeg"
+            },
+            3: { // Miércoles
+                name: "Strogonoff de Res",
+                description: "Pasta Plumita Salteada con ajo y Perejil, Sopa Chupe",
+                price: 10.00,
+                image: "https://i.imgur.com/KQXDDOX.png"
+            },
+            4: { // Jueves
+                name: "Callos a la Madrileña",
+                description: "Arroz, Tajada, Sopa de Pollo",
+                price: 10.00,
+                image: "https://i.imgur.com/3E3ioSs.jpeg"
+            },
+            5: { // Viernes
+                name: "Pasticho de Carne / Pastel de Pollo",
+                description: "Pasticho o Pastel de pollo con Sopa de Lentejas",
+                price: 10.00,
+                image: "https://i.imgur.com/o25m2RG.jpeg",
+                options: [
+                    {
+                        name: "Pasticho de Carne",
+                        description: "Pasticho con Sopa de Lentejas",
+                        price: 10.00,
+                        image: "https://i.imgur.com/o25m2RG.jpeg"
+                    },
+                    {
+                        name: "Pastel de Pollo",
+                        description: "Pastel de pollo con Sopa de Lentejas",
+                        price: 10.00,
+                        image: "https://i.imgur.com/NV9xOEJ.jpeg"
+                    }
+                ]
+            },
+            6: { // Sábado
+                name: "Parrilla Criolla",
+                description: "Deliciosa parrilla criolla con selección de carnes y acompañamientos",
+                price: 10.00,
+                image: "https://i.imgur.com/flbsXrZ.jpeg"
+            },
+            0: { // Domingo
+                name: "Casuela de Mariscos",
+                description: "Exquisita casuela de mariscos frescos con vegetales y especias",
+                price: 10.00,
+                image: "https://i.imgur.com/yZ996BA.jpeg"
+            }
+        };
+        // Actualizar fecha y hora con el formato solicitado
+        function updateDateTime() {
+            const now = new Date();
+            // Días de la semana en español
+            const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const dayName = daysOfWeek[now.getDay()];
+            // Día del mes
+            const day = now.getDate();
+            // Meses en español
+            const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agusto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const monthName = months[now.getMonth()];
+            // Año
+            const year = now.getFullYear();
+            // Hora en formato AM/PM
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // La hora '0' debe ser '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            const timeString = `${hours}:${minutes} ${ampm}`;
+            // Formatear fecha completa
+            datetimeElement.textContent = `${dayName}, ${day} de ${monthName} ${year} - ${timeString}`;
+            // Para otros elementos que también muestran fecha
+            const shortDate = `${day}/${now.getMonth() + 1}/${year}`;
+            fechaActualElement.textContent = shortDate;
+            tasaFechaElement.textContent = shortDate;
+            tasaHeaderElement.innerHTML = `Tasa BCV: <span id="tasa-value">${tasaBCV}</span> Bs/$ - Actualizada a <span id="fecha-actual">${shortDate}</span>`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+        // Actualizar valor de la tasa
+        tasaValueElement.textContent = tasaBCV;
+        // Datos del menú actualizados con la nueva categoría "VIP"
+        const menuData = {
+            desayunos: [
+                {
+                    name: "Desayuno Criollo",
+                    price: 9.00,
+                    description: "Arepa, carne mechada, caraotas, huevo y queso rallado.",
+                    image: "https://i.imgur.com/vbUesLX.jpeg"
+                },
+                {
+                    name: "Desayuno Americano",
+                    price: 9.00,
+                    description: "Huevo, jamón de pavo, bacon, queso paisa, arepa o tostada.",
+                    image: "https://i.imgur.com/iN8m6ff.jpeg"
+                },
+                {
+                    name: "Mini Empanadas",
+                    price: 3.00,
+                    description: "Cuatro mini empanadas con variedad de relleno: Carne mechada, queso, pollo, capresa, jamón y queso, catira, pelua, americana (bacon y queso americano fundido).",
+                    image: "https://i.pinimg.com/736x/f1/a8/71/f1a871d183e282f1391fba10480bbc5b.jpg",
+                    hasFlavors: true
+                },
+                {
+                    name: "Omelette",
+                    price: 9.00,
+                    description: "Tortilla de huevo rellena con jamón de pavo, queso paisa and tomate a la plancha.",
+                    image: "https://i.imgur.com/8AmXDPr.jpeg"
+                },
+                {
+                    name: "Ración de Tequeños",
+                    price: 5.00,
+                    description: "6 unidades con mermelada de guayaba o fresa.",
+                    image: "https://i.imgur.com/sWLfhEv.jpeg"
+                }
+            ],
+            ejecutivo: [], // Se llenará dinámicamente según el día
+            hamburguesas: [
+                {
+                    name: "Hamburguesa Clásica",
+                    price: 5.00,
+                    description: "130g de carne, lechuga americana, tomate, jamón, queso americano fundido, salsas.",
+                    image: "https://i.imgur.com/ua7ZDtt.jpeg",
+                    hasCustomization: true
+                },
+                {
+                    name: "Hamburguesa Americana",
+                    price: 6.00,
+                    description: "130g de carne, bacon, queso americano fundido, cebolla crujiente and salsa BBQ.",
+                    image: "https://i.imgur.com/s23BSOe.jpeg",
+                    hasCustomization: true
+                },
+                {
+                    name: "Hamburguesa de Pollo Crispy",
+                    price: 9.50,
+                    description: "Rico pollo crispy.",
+                    image: "https://i.imgur.com/01daLfJ.jpeg",
+                    hasCustomization: true
+                }
+            ],
+            pollo: [
+                {
+                    name: "Pollo Asado",
+                    price: 12.50,
+                    description: "Delicioso pollo Asados, Acompañado de papas fritas.",
+                    image: "https://i.imgur.com/aF1l8QC.png",
+                    hasSides: true
+                },
+                {
+                    name: "Pollo a la Parrilla",
+                    price: 11.00,
+                    description: "Pechuga de pollo marinada y asada a la parrilla con vegetales.",
+                    image: "https://i.imgur.com/wzK7Zey.jpeg",
+                    hasSides: true
+                },
+                {
+                    name: "Pollo Frito",
+                    price: 13.00,
+                    description: "Pollo frito crujiente con salsa picante de Nashville, servido con papas.",
+                    image: "https://i.imgur.com/5NAh7Mu.jpeg",
+                    hasSides: true
+                },
+                {
+                    name: "Pollo Teriyaki",
+                    price: 12.00,
+                    description: "Pollo marinado en salsa teriyaki, acompañado de arroz y vegetales al vapor.",
+                    image: "https://i.imgur.com/FNVw9Vc.png",
+                    hasSides: true
+                },
+                {
+                    name: "Pollo BBQ",
+                    price: 11.50,
+                    description: "Alitas y muslos de pollo glaseados con salsa BBQ casera, servidos con papas fritas.",
+                    image: "https://i.imgur.com/tvdTadI.png",
+                    hasSides: true
+                }
+            ],
+            especiales: [
+                {
+                    name: "César con Pollo",
+                    price: 6.00,
+                    description: "Pechuga de pollo, Lechuga Americana, crotones, queso parmesano + aderezo de la casa.",
+                    image: "https://i.imgur.com/MExFJCi.jpeg"
+                },
+                {
+                    name: "Club House",
+                    price: 10.00,
+                    description: "Milanesa de pollo, tomate, lechuga americana, jamón, queso, bacon, huevo and salsas.",
+                    image: "https://i.imgur.com/aqOwTRA.jpeg",
+                    hasCustomization: true
+                },
+                {
+                    name: "Garden Bowl",
+                    price: 8.00,
+                    description: "Mezcla de vegetales frescos (lechuga americana, rúgula, zanahoria, espinaca, acelga, maíz and aguacate) combinados con proteína (ave, carne de res o pescado) and aderezo de la casa.",
+                    image: "https://i.imgur.com/EaN2UKx.png"
+                },
+                {
+                    name: "Pizza Margherita",
+                    price: 12.00,
+                    description: "Mozzarella, salsa napolitana + un ingrediente adicional (maíz, cebolla, pimentón o bacon).",
+                    image: "https://i.imgur.com/MmntjqG.jpeg",
+                    hasIngredients: true
+                },
+                {
+                    name: "Panini de Pollo",
+                    price: 7.00,
+                    description: "Pollo empanizado, tomate, lechuga americana, queso amarillo and salsas.",
+                    image: "https://i.imgur.com/lOWxa2v.jpeg",
+                    hasCustomization: true
+                }
+            ],
+            cafe: [
+                {
+                    name: "Blend",
+                    price: 3.50,
+                    description: "Mezcla especial de café",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Descafeinato",
+                    price: 3.50,
+                    description: "Café descafeinado",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Cappuccino",
+                    price: 3.50,
+                    description: "Café con leche espumosa",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Latte",
+                    price: 3.50,
+                    description: "Café con leche",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Mokaccino",
+                    price: 3.50,
+                    description: "Café con chocolate",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Cortado",
+                    price: 3.50,
+                    description: "Café cortado con leche",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Nocciolino",
+                    price: 3.50,
+                    description: "Café con avellana",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Creme Bruleé",
+                    price: 3.50,
+                    description: "Café con sabor a crema brulee",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Biscotto",
+                    price: 3.50,
+                    description: "Café con galleta",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Cioccolato",
+                    price: 3.50,
+                    description: "Café con chocolate",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Cioccolato e Menta",
+                    price: 3.50,
+                    description: "Café con chocolate y menta",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Cioccolato e Arancia",
+                    price: 3.50,
+                    description: "Café con chocolate y naranja",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Limone",
+                    price: 3.50,
+                    description: "Café con limón",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Zenzero e Limone",
+                    price: 3.50,
+                    description: "Café con jengibre y limón",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Frutti di Bosco",
+                    price: 3.50,
+                    description: "Café con frutos del bosque",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                },
+                {
+                    name: "Camomilla, Arancia e Miele",
+                    price: 3.50,
+                    description: "Infusión de manzanilla con naranja y miel",
+                    image: "https://i.imgur.com/IhjjkHs.png" // Imagen actualizada
+                }
+            ],
+            bebidas: [
+                {
+                    name: "Agua Mineral 600 ML",
+                    price: 2.50,
+                    description: "Agua mineral natural",
+                    image: "https://i.imgur.com/iKngRo9.jpeg"
+                },
+                {
+                    name: "Pepsi Lata",
+                    price: 4.00,
+                    description: "Refresco de cola",
+                    image: "https://i.imgur.com/ydPoo70.jpeg"
+                },
+                {
+                    name: "Coca-Cola Lata",
+                    price: 4.00,
+                    description: "Refresco de cola",
+                    image: "https://i.imgur.com/YEvuvvc.jpeg"
+                },
+                {
+                    name: "Chinotto",
+                    price: 4.00,
+                    description: "Bebida refrescante",
+                    image: "https://i.imgur.com/2JLASqW.png"
+                },
+                {
+                    name: "Gatorade",
+                    price: 6.00,
+                    description: "Bebida isotónica",
+                    image: "https://i.imgur.com/pT9NE2q.jpeg"
+                },
+                {
+                    name: "Lipton Limón",
+                    price: 4.00,
+                    description: "Té helado sabor limón",
+                    image: "https://i.imgur.com/PBWcXhx.png"
+                },
+                {
+                    name: "Lipton Durazno",
+                    price: 4.00,
+                    description: "Té helado sabor durazno",
+                    image: "https://i.imgur.com/Jzf1Wf3.png"
+                }
+            ],
+            postre: [
+                {
+                    name: "Pie de Limon",
+                    price: 5.50,
+                    description: "Pie de Limon",
+                    image: "https://i.imgur.com/V4GsKoi.jpeg"
+                },
+                {
+                    name: "Pie de Fresa",
+                    price: 6.00,
+                    description: "Pie de Fresa",
+                    image: "https://i.imgur.com/CxDp8BZ.jpeg"
+                },
+			 {
+                    name: "Tres Leches",
+                    price: 6.00,
+                    description: "Tres Leche",
+                    image: "https://i.imgur.com/cNVSjoQ.png"
+                }
+            ],
+            // Nueva categoría VIP
+            vip: [
+                {
+                    name: "Pan de Jamón",
+                    price: 8.00,
+                    description: "Delicioso pan de jamón relleno con jamón, tocino, pasas y aceitunas.",
+                    image: "https://i.pinimg.com/736x/43/09/9a/43099adf2a2a4173dc9b5b10d8e2704b.jpg"
+                },
+                {
+                    name: "Hallaca",
+                    price: 12.00,
+                    description: "Plato navideño tradicional venezolano con masa de maíz rellena de guiso.",
+                    image: "https://i.pinimg.com/736x/c8/81/88/c88188b5e107c7d14d121008e0b9fec6.jpg"
+                },
+                {
+                    name: "Pernil Asado",
+                    price: 17.20,
+                    description: "Pernil de cerdo asado lentamente con especias y hierbas aromáticas.",
+                    image: "https://i.pinimg.com/736x/ce/c9/d7/cec9d79a2e3f6bd0298e948eb3748325.jpg"
+                }
+            ]
+        };
+        // Mostrar productos por categoría
+        function showProducts(category, searchTerm = '') {
+            productsContainer.innerHTML = '';
+            noResultsElement.style.display = 'none';
+            
+            if (category === 'ejecutivo') {
+                showEjecutivoMenu(searchTerm);
+                return;
+            }
+            
+            const products = menuData[category];
+            let filteredProducts = products;
+            
+            // Filtrar por término de búsqueda si existe
+            if (searchTerm) {
+                filteredProducts = products.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    product.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            
+            // Mostrar mensaje si no hay resultados
+            if (filteredProducts.length === 0 && searchTerm) {
+                noResultsElement.style.display = 'block';
+                return;
+            }
+            
+            filteredProducts.forEach((product, index) => {
+                // Buscar el índice original del producto en el array completo
+                const originalIndex = products.findIndex(p => p.name === product.name);
+                
+                const productElement = document.createElement('div');
+                productElement.className = 'product';
+                productElement.innerHTML = `
+                    <div class="product-image-container">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <p class="product-price">$${product.price.toFixed(2)} / Bs ${(product.price * tasaBCV).toFixed(2)}</p>
+                        <div class="product-actions">
+                            <div class="quantity-selector">
+                                <button class="quantity-btn minus" data-product="${category}-${originalIndex}">-</button>
+                                <span class="quantity" id="quantity-${category}-${originalIndex}">0</span>
+                                <button class="quantity-btn plus" data-product="${category}-${originalIndex}">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                // Si es el producto de mini empanadas, agregar el selector de sabores
+                if (product.hasFlavors) {
+                    const flavorSelector = document.createElement('div');
+                    flavorSelector.className = 'flavor-selector';
+                    flavorSelector.id = `flavor-selector-${category}-${originalIndex}`;
+                    flavorSelector.innerHTML = `
+                        <div class="flavor-combos" id="flavor-combos-${category}-${originalIndex}">
+                            <!-- Los combos de sabores se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(flavorSelector);
+                }
+                // Si es Pizza Margherita, agregar el selector de ingredientes
+                if (product.hasIngredients) {
+                    const ingredientSelector = document.createElement('div');
+                    ingredientSelector.className = 'ingredient-selector';
+                    ingredientSelector.id = `ingredient-selector-${category}-${originalIndex}`;
+                    ingredientSelector.innerHTML = `
+                        <div class="ingredient-combos" id="ingredient-combos-${category}-${originalIndex}">
+                            <!-- Los combos de ingredientes se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(ingredientSelector);
+                }
+                // Si es Hamburguesa, Club House o Panini, agregar el selector de personalización
+                if (product.hasCustomization) {
+                    const customizationSelector = document.createElement('div');
+                    customizationSelector.className = 'customization-selector';
+                    customizationSelector.id = `customization-selector-${category}-${originalIndex}`;
+                    customizationSelector.innerHTML = `
+                        <div class="customization-combos" id="customization-combos-${category}-${originalIndex}">
+                            <!-- Los combos de personalización se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(customizationSelector);
+                }
+                // Si es Pollo, agregar el selector de contornos
+                if (product.hasSides) {
+                    const sidesSelector = document.createElement('div');
+                    sidesSelector.className = 'sides-selector';
+                    sidesSelector.id = `sides-selector-${category}-${originalIndex}`;
+                    sidesSelector.innerHTML = `
+                        <div class="sides-combos" id="sides-combos-${category}-${originalIndex}">
+                            <!-- Los combos de contornos se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(sidesSelector);
+                }
+                productsContainer.appendChild(productElement);
+            });
+            setupEventListeners(category);
+        }
+        // Mostrar menú ejecutivo según el día (ahora incluye sábado y domingo)
+        function showEjecutivoMenu(searchTerm = '') {
+            const dayOfWeek = getDayOfWeek();
+            const dayName = getDayName(dayOfWeek);
+            const menuItem = menuEjecutivo[dayOfWeek];
+            let menuHTML = `
+                <div class="daily-menu">
+                    <h3 class="daily-menu-title"><i class="fas fa-calendar-day"></i> Menú Ejecutivo de ${dayName}</h3>
+            `;
+            // Días con opciones múltiples (solo viernes)
+            if (dayOfWeek === 5 && menuItem.options) {
+                menuHTML += `
+                    <p class="product-description">${menuItem.description}</p>
+                    <p class="product-price">$${menuItem.price.toFixed(2)} / Bs ${(menuItem.price * tasaBCV).toFixed(2)}</p>
+                    <div class="menu-options">
+                `;
+                // Filtrar opciones por término de búsqueda
+                let filteredOptions = menuItem.options;
+                if (searchTerm) {
+                    filteredOptions = menuItem.options.filter(option => 
+                        option.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        option.description.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+                
+                if (filteredOptions.length === 0 && searchTerm) {
+                    noResultsElement.style.display = 'block';
+                    productsContainer.innerHTML = menuHTML + '</div></div>';
+                    return;
+                }
+                
+                filteredOptions.forEach((option, index) => {
+                    // Buscar el índice original
+                    const originalIndex = menuItem.options.findIndex(o => o.name === option.name);
+                    
+                    menuHTML += `
+                        <div class="product">
+                            <div class="product-image-container">
+                                <img src="${option.image}" alt="${option.name}" class="product-image">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">${option.name}</h3>
+                                <p class="product-description">${option.description}</p>
+                                <p class="product-price">$${option.price.toFixed(2)} / Bs ${(option.price * tasaBCV).toFixed(2)}</p>
+                                <div class="product-actions">
+                                    <div class="quantity-selector">
+                                        <button class="quantity-btn minus" data-product="ejecutivo-${originalIndex}">-</button>
+                                        <span class="quantity" id="quantity-ejecutivo-${originalIndex}">0</span>
+                                        <button class="quantity-btn plus" data-product="ejecutivo-${originalIndex}">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                menuHTML += `</div></div>`;
+            } else {
+                // Días normales con un solo plato (incluyendo sábado y domingo)
+                // Filtrar por término de búsqueda
+                if (searchTerm && !menuItem.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+                    !menuItem.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    noResultsElement.style.display = 'block';
+                    productsContainer.innerHTML = menuHTML + '</div>';
+                    return;
+                }
+                
+                menuHTML += `
+                    <div class="product">
+                        <div class="product-image-container">
+                            <img src="${menuItem.image}" alt="${menuItem.name}" class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">${menuItem.name}</h3>
+                            <p class="product-description">${menuItem.description}</p>
+                            <p class="product-price">$${menuItem.price.toFixed(2)} / Bs ${(menuItem.price * tasaBCV).toFixed(2)}</p>
+                            <div class="product-actions">
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn minus" data-product="ejecutivo-0">-</button>
+                                    <span class="quantity" id="quantity-ejecutivo-0">0</span>
+                                    <button class="quantity-btn plus" data-product="ejecutivo-0">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                `;
+            }
+            productsContainer.innerHTML = menuHTML;
+            setupEventListeners('ejecutivo');
+        }
+        // Configurar event listeners para los productos
+        function setupEventListeners(category) {
+            // Agregar event listeners a los botones de cantidad
+            document.querySelectorAll('.plus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = e.target.getAttribute('data-product');
+                    const quantityElement = document.getElementById(`quantity-${productId}`);
+                    let quantity = parseInt(quantityElement.textContent);
+                    quantityElement.textContent = quantity + 1;
+                    // Si es mini empanadas, actualizar selectores de sabor
+                    if (productId.startsWith('desayunos-2')) {
+                        updateEmpanadaFlavorSelectors(productId, quantity + 1);
+                    }
+                    // Si es Pizza Margherita, actualizar selectores de ingredientes
+                    if (productId.startsWith('especiales-3')) {
+                        updatePizzaIngredientSelectors(productId, quantity + 1);
+                    }
+                    // Si es Hamburguesa, Club House o Panini, actualizar selectores de personalización
+                    if (productId.startsWith('hamburguesas-') || productId.startsWith('especiales-1') || productId.startsWith('especiales-4')) {
+                        updateCustomizationSelectors(productId, quantity + 1);
+                    }
+                    // Si es Pollo, actualizar selectores de contornos
+                    if (productId.startsWith('pollo-')) {
+                        updateSidesSelectors(productId, quantity + 1);
+                    }
+                    // Agregar automáticamente al carrito
+                    addToCart(productId, quantity + 1);
+                });
+            });
+            document.querySelectorAll('.minus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = e.target.getAttribute('data-product');
+                    const quantityElement = document.getElementById(`quantity-${productId}`);
+                    let quantity = parseInt(quantityElement.textContent);
+                    if (quantity > 0) {
+                        quantityElement.textContent = quantity - 1;
+                        // Si es mini empanadas, actualizar selectores de sabor
+                        if (productId.startsWith('desayunos-2')) {
+                            updateEmpanadaFlavorSelectors(productId, quantity - 1);
+                        }
+                        // Si es Pizza Margherita, actualizar selectores de ingredientes
+                        if (productId.startsWith('especiales-3')) {
+                            updatePizzaIngredientSelectors(productId, quantity - 1);
+                        }
+                        // Si es Hamburguesa, Club House o Panini, actualizar selectores de personalización
+                        if (productId.startsWith('hamburguesas-') || productId.startsWith('especiales-1') || productId.startsWith('especiales-4')) {
+                            updateCustomizationSelectors(productId, quantity - 1);
+                        }
+                        // Si es Pollo, actualizar selectores de contornos
+                        if (productId.startsWith('pollo-')) {
+                            updateSidesSelectors(productId, quantity - 1);
+                        }
+                        // Actualizar automáticamente el carrito
+                        updateCart(productId, quantity - 1);
+                    }
+                });
+            });
+            // Event listeners para dropdowns de sabores
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('flavor-dropdown')) {
+                    const productId = e.target.getAttribute('data-product');
+                    updateCartWithFlavors(productId);
+                }
+                if (e.target.classList.contains('ingredient-checkbox')) {
+                    const productId = e.target.getAttribute('data-product');
+                    const combo = e.target.getAttribute('data-combo');
+                    const ingredient = e.target.value;
+                    // Desmarcar otros checkboxes en el mismo combo
+                    if (e.target.checked) {
+                        document.querySelectorAll(`.ingredient-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                            if (cb !== e.target) {
+                                cb.checked = false;
+                            }
+                        });
+                    }
+                    updateCartWithIngredients(productId);
+                }
+                if (e.target.classList.contains('customization-checkbox')) {
+                    const productId = e.target.getAttribute('data-product');
+                    updateCartWithCustomizations(productId);
+                }
+                if (e.target.classList.contains('sides-checkbox')) {
+                    const productId = e.target.getAttribute('data-product');
+                    const combo = e.target.getAttribute('data-combo');
+                    updateCartWithSides(productId);
+                }
+            });
+        }
+        // Actualizar selectores de sabor para empanadas
+        function updateEmpanadaFlavorSelectors(productId, quantity) {
+            const flavorSelector = document.getElementById(`flavor-selector-${productId}`);
+            const flavorCombos = document.getElementById(`flavor-combos-${productId}`);
+            if (quantity > 0) {
+                flavorSelector.style.display = 'block';
+                // Generar combos según la cantidad
+                flavorCombos.innerHTML = '';
+                for (let combo = 1; combo <= quantity; combo++) {
+                    const comboDiv = document.createElement('div');
+                    comboDiv.className = 'flavor-combo';
+                    comboDiv.innerHTML = `
+                        <h4 class="flavor-combo-title"><i class="fas fa-utensils"></i> Combo Mini Empanada ${combo}</h4>
+                        <div class="empanadas-grid">
+                    `;
+                    // Agregar selectores para cada empanada (4 por combo)
+                    for (let empanada = 1; empanada <= 4; empanada++) {
+                        const empanadaDiv = document.createElement('div');
+                        empanadaDiv.className = 'empanada-selector';
+                        empanadaDiv.innerHTML = `
+                            <h5 class="empanada-title">Empanada ${empanada}</h5>
+                            <select class="flavor-dropdown" data-product="${productId}" data-combo="${combo}" data-empanada="${empanada}">
+                                <option value="">Selecciona un sabor</option>
+                                ${empanadaFlavors.map(flavor => `
+                                    <option value="${flavor}">${flavor}</option>
+                                `).join('')}
+                            </select>
+                        `;
+                        comboDiv.appendChild(empanadaDiv);
+                    }
+                    comboDiv.innerHTML += `</div>`; // Cerrar el grid
+                    flavorCombos.appendChild(comboDiv);
+                }
+                // Agregar event listeners a los dropdowns
+                document.querySelectorAll(`.flavor-dropdown[data-product="${productId}"]`).forEach(dropdown => {
+                    dropdown.addEventListener('change', () => {
+                        updateCartWithFlavors(productId);
+                    });
+                });
+            } else {
+                flavorSelector.style.display = 'none';
+            }
+        }
+        // Actualizar selectores de ingredientes para pizza
+        function updatePizzaIngredientSelectors(productId, quantity) {
+            const ingredientSelector = document.getElementById(`ingredient-selector-${productId}`);
+            const ingredientCombos = document.getElementById(`ingredient-combos-${productId}`);
+            if (quantity > 0) {
+                ingredientSelector.style.display = 'block';
+                // Generar combos según la cantidad
+                ingredientCombos.innerHTML = '';
+                for (let combo = 1; combo <= quantity; combo++) {
+                    const comboDiv = document.createElement('div');
+                    comboDiv.className = 'ingredient-combo';
+                    comboDiv.innerHTML = `
+                        <h4 class="ingredient-combo-title"><i class="fas fa-pizza-slice"></i> Pizza Margherita ${combo}</h4>
+                        <p class="empanada-title">Selecciona un ingrediente extra:</p>
+                        <div class="ingredient-options">
+                    `;
+                    // Agregar opciones para cada ingrediente
+                    pizzaIngredients.forEach(ingredient => {
+                        comboDiv.innerHTML += `
+                            <div class="ingredient-option">
+                                <input type="checkbox" class="ingredient-checkbox" id="ing-${productId}-${combo}-${ingredient}" 
+                                    data-product="${productId}" data-combo="${combo}" value="${ingredient}">
+                                <label for="ing-${productId}-${combo}-${ingredient}" class="ingredient-label">${ingredient}</label>
+                            </div>
+                        `;
+                    });
+                    comboDiv.innerHTML += `</div>`; // Cerrar el grid
+                    ingredientCombos.appendChild(comboDiv);
+                }
+            } else {
+                ingredientSelector.style.display = 'none';
+            }
+        }
+        // Actualizar selectores de personalización para hamburguesas, Club House y Panini
+        function updateCustomizationSelectors(productId, quantity) {
+            const customizationSelector = document.getElementById(`customization-selector-${productId}`);
+            const customizationCombos = document.getElementById(`customization-combos-${productId}`);
+            if (quantity > 0) {
+                customizationSelector.style.display = 'block';
+                // Generar combos según la cantidad
+                customizationCombos.innerHTML = '';
+                for (let combo = 1; combo <= quantity; combo++) {
+                    const comboDiv = document.createElement('div');
+                    comboDiv.className = 'customization-combo';
+                    // Obtener el nombre del producto para el título
+                    const idParts = productId.split('-');
+                    const cat = idParts[0];
+                    const idx = idParts[1];
+                    const product = menuData[cat][parseInt(idx)];
+                    comboDiv.innerHTML = `
+                        <h4 class="customization-combo-title"><i class="fas fa-hamburger"></i> ${product.name} ${combo}</h4>
+                        <p class="empanada-title">Personaliza tu pedido:</p>
+                        <div class="customization-options" id="custom-options-${productId}-${combo}">
+                    `;
+                    // Agregar opciones para cada personalización
+                    customizationOptions.forEach(option => {
+                        comboDiv.innerHTML += `
+                            <div class="customization-option">
+                                <input type="checkbox" class="customization-checkbox" id="custom-${productId}-${combo}-${option.replace(/\s+/g, '-')}" 
+                                    data-product="${productId}" data-combo="${combo}" value="${option}">
+                                <label for="custom-${productId}-${combo}-${option.replace(/\s+/g, '-')}" class="customization-label">${option}</label>
+                            </div>
+                        `;
+                    });
+                    comboDiv.innerHTML += `</div>`; // Cerrar el grid
+                    customizationCombos.appendChild(comboDiv);
+                }
+                // Agregar event listeners a los checkboxes de personalización
+                document.querySelectorAll(`.customization-checkbox[data-product="${productId}"]`).forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const productId = e.target.getAttribute('data-product');
+                        const combo = e.target.getAttribute('data-combo');
+                        const value = e.target.value;
+                        const isChecked = e.target.checked;
+                        // Si se selecciona "Con TODO"
+                        if (value === "Con TODO" && isChecked) {
+                            // Deshabilitar todas las otras opciones
+                            document.querySelectorAll(`.customization-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                                if (cb.value !== "Con TODO") {
+                                    cb.checked = false;
+                                    cb.disabled = true;
+                                    cb.closest('.customization-option').classList.add('disabled');
+                                }
+                            });
+                        } 
+                        // Si se deselecciona "Con TODO"
+                        else if (value === "Con TODO" && !isChecked) {
+                            // Habilitar todas las otras opciones
+                            document.querySelectorAll(`.customization-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                                if (cb.value !== "Con TODO") {
+                                    cb.disabled = false;
+                                    cb.closest('.customization-option').classList.remove('disabled');
+                                }
+                            });
+                        }
+                        // Si se selecciona cualquier otra opción
+                        else if (isChecked) {
+                            // Asegurarse de que "Con TODO" esté deseleccionado
+                            const conTodoCheckbox = document.querySelector(`.customization-checkbox[data-product="${productId}"][data-combo="${combo}"][value="Con TODO"]`);
+                            if (conTodoCheckbox) {
+                                conTodoCheckbox.checked = false;
+                            }
+                        }
+                        updateCartWithCustomizations(productId);
+                    });
+                });
+            } else {
+                customizationSelector.style.display = 'none';
+            }
+        }
+        // Actualizar selectores de contornos para pollo
+        function updateSidesSelectors(productId, quantity) {
+            const sidesSelector = document.getElementById(`sides-selector-${productId}`);
+            const sidesCombos = document.getElementById(`sides-combos-${productId}`);
+            if (quantity > 0) {
+                sidesSelector.style.display = 'block';
+                // Generar combos según la cantidad
+                sidesCombos.innerHTML = '';
+                for (let combo = 1; combo <= quantity; combo++) {
+                    const comboDiv = document.createElement('div');
+                    comboDiv.className = 'sides-combo';
+                    // Obtener el nombre del producto para el título
+                    const idParts = productId.split('-');
+                    const cat = idParts[0];
+                    const idx = idParts[1];
+                    const product = menuData[cat][parseInt(idx)];
+                    comboDiv.innerHTML = `
+                        <h4 class="sides-combo-title"><i class="fas fa-drumstick-bite"></i> ${product.name} ${combo}</h4>
+                        <p class="empanada-title">Elige hasta 2 contornos:</p>
+                        <div class="sides-options" id="sides-options-${productId}-${combo}">
+                    `;
+                    // Agregar opciones para cada contorno
+                    sidesOptions.forEach(option => {
+                        comboDiv.innerHTML += `
+                            <div class="sides-option">
+                                <input type="checkbox" class="sides-checkbox" id="sides-${productId}-${combo}-${option.replace(/\s+/g, '-')}" 
+                                    data-product="${productId}" data-combo="${combo}" value="${option}">
+                                <label for="sides-${productId}-${combo}-${option.replace(/\s+/g, '-')}" class="sides-label">${option}</label>
+                            </div>
+                        `;
+                    });
+                    comboDiv.innerHTML += `</div>`; // Cerrar el grid
+                    sidesCombos.appendChild(comboDiv);
+                }
+                // Agregar event listeners a los checkboxes de contornos
+                document.querySelectorAll(`.sides-checkbox[data-product="${productId}"]`).forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const productId = e.target.getAttribute('data-product');
+                        const combo = e.target.getAttribute('data-combo');
+                        const isChecked = e.target.checked;
+                        // Obtener todos los checkboxes en este combo
+                        const checkboxes = document.querySelectorAll(`.sides-checkbox[data-product="${productId}"][data-combo="${combo}"]`);
+                        const checkedCheckboxes = Array.from(checkboxes).filter(cb => cb.checked);
+                        // Si se ha seleccionado más de 2, desmarcar el último
+                        if (checkedCheckboxes.length > 2 && isChecked) {
+                            e.target.checked = false;
+                            alert('Solo puedes seleccionar hasta 2 contornos.');
+                        }
+                        // Si se seleccionan exactamente 2, deshabilitar los demás
+                        if (checkedCheckboxes.length === 2) {
+                            checkboxes.forEach(cb => {
+                                if (!cb.checked) {
+                                    cb.disabled = true;
+                                    cb.closest('.sides-option').classList.add('disabled');
+                                }
+                            });
+                        } else {
+                            // Si se seleccionan menos de 2, habilitar todos
+                            checkboxes.forEach(cb => {
+                                cb.disabled = false;
+                                cb.closest('.sides-option').classList.remove('disabled');
+                            });
+                        }
+                        updateCartWithSides(productId);
+                    });
+                });
+            } else {
+                sidesSelector.style.display = 'none';
+            }
+        }
+        // Obtener sabores seleccionados para empanadas
+        function getSelectedFlavors(productId, quantity) {
+            const comboFlavors = [];
+            for (let combo = 1; combo <= quantity; combo++) {
+                const comboData = [];
+                for (let empanada = 1; empanada <= 4; empanada++) {
+                    const dropdown = document.querySelector(`select[data-product="${productId}"][data-combo="${combo}"][data-empanada="${empanada}"]`);
+                    if (dropdown && dropdown.value) {
+                        comboData.push(dropdown.value);
+                    } else {
+                        comboData.push("Sin seleccionar");
+                    }
+                }
+                comboFlavors.push(comboData);
+            }
+            return comboFlavors;
+        }
+        // Obtener ingredientes seleccionados para pizza
+        function getSelectedIngredients(productId, quantity) {
+            const comboIngredients = [];
+            for (let combo = 1; combo <= quantity; combo++) {
+                let selectedIngredient = "Ninguno";
+                // Buscar el checkbox seleccionado en este combo
+                document.querySelectorAll(`.ingredient-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                    if (cb.checked) {
+                        selectedIngredient = cb.value;
+                    }
+                });
+                comboIngredients.push(selectedIngredient);
+            }
+            return comboIngredients;
+        }
+        // Obtener personalizaciones seleccionadas para hamburguesas, Club House y Panini
+        function getSelectedCustomizations(productId, quantity) {
+            const comboCustomizations = [];
+            for (let combo = 1; combo <= quantity; combo++) {
+                const selectedOptions = [];
+                // Buscar todos los checkboxes seleccionados en este combo
+                document.querySelectorAll(`.customization-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                    if (cb.checked) {
+                        selectedOptions.push(cb.value);
+                    }
+                });
+                comboCustomizations.push(selectedOptions);
+            }
+            return comboCustomizations;
+        }
+        // Obtener contornos seleccionados para pollo
+        function getSelectedSides(productId, quantity) {
+            const comboSides = [];
+            for (let combo = 1; combo <= quantity; combo++) {
+                const selectedSides = [];
+                // Buscar todos los checkboxes seleccionados en este combo
+                document.querySelectorAll(`.sides-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                    if (cb.checked) {
+                        selectedSides.push(cb.value);
+                    }
+                });
+                comboSides.push(selectedSides);
+            }
+            return comboSides;
+        }
+        // Actualizar carrito con sabores
+        function updateCartWithFlavors(productId) {
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            const quantity = parseInt(quantityElement.textContent);
+            if (quantity > 0) {
+                const flavors = getSelectedFlavors(productId, quantity);
+                updateCart(productId, quantity, flavors);
+            }
+        }
+        // Actualizar carrito con ingredientes
+        function updateCartWithIngredients(productId) {
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            const quantity = parseInt(quantityElement.textContent);
+            if (quantity > 0) {
+                const ingredients = getSelectedIngredients(productId, quantity);
+                updateCart(productId, quantity, [], ingredients);
+            }
+        }
+        // Actualizar carrito con personalizaciones
+        function updateCartWithCustomizations(productId) {
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            const quantity = parseInt(quantityElement.textContent);
+            if (quantity > 0) {
+                const customizations = getSelectedCustomizations(productId, quantity);
+                updateCart(productId, quantity, [], [], customizations);
+            }
+        }
+        // Actualizar carrito con contornos
+        function updateCartWithSides(productId) {
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            const quantity = parseInt(quantityElement.textContent);
+            if (quantity > 0) {
+                const sides = getSelectedSides(productId, quantity);
+                updateCart(productId, quantity, [], [], [], sides);
+            }
+        }
+        // Funciones del carrito
+        function addToCart(productId, quantity, flavors = [], ingredients = [], customizations = [], sides = []) {
+            const idParts = productId.split('-');
+            const cat = idParts[0];
+            const idx = idParts[1];
+            let product;
+            if (cat === 'ejecutivo') {
+                const dayOfWeek = getDayOfWeek();
+                // Viernes tiene opciones múltiples
+                if (dayOfWeek === 5 && menuEjecutivo[dayOfWeek].options) {
+                    product = menuEjecutivo[dayOfWeek].options[parseInt(idx)];
+                } else {
+                    product = menuEjecutivo[dayOfWeek];
+                }
+            } else {
+                product = menuData[cat][parseInt(idx)];
+            }
+            // Si es empanadas, obtener los sabores seleccionados
+            if (product.hasFlavors && flavors.length === 0) {
+                flavors = getSelectedFlavors(productId, quantity);
+            }
+            // Si es pizza, obtener los ingredientes seleccionados
+            if (product.hasIngredients && ingredients.length === 0) {
+                ingredients = getSelectedIngredients(productId, quantity);
+            }
+            // Si es hamburguesa, Club House o Panini, obtener las personalizaciones seleccionadas
+            if (product.hasCustomization && customizations.length === 0) {
+                customizations = getSelectedCustomizations(productId, quantity);
+            }
+            // Si es pollo, obtener los contornos seleccionados
+            if (product.hasSides && sides.length === 0) {
+                sides = getSelectedSides(productId, quantity);
+            }
+            const existingItemIndex = cart.findIndex(item => item.id === productId);
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].quantity = quantity;
+                if (flavors.length > 0) {
+                    cart[existingItemIndex].flavors = flavors;
+                }
+                if (ingredients.length > 0) {
+                    cart[existingItemIndex].ingredients = ingredients;
+                }
+                if (customizations.length > 0) {
+                    cart[existingItemIndex].customizations = customizations;
+                }
+                if (sides.length > 0) {
+                    cart[existingItemIndex].sides = sides;
+                }
+            } else {
+                const cartItem = {
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    quantity: quantity
+                };
+                if (flavors.length > 0) {
+                    cartItem.flavors = flavors;
+                }
+                if (ingredients.length > 0) {
+                    cartItem.ingredients = ingredients;
+                }
+                if (customizations.length > 0) {
+                    cartItem.customizations = customizations;
+                }
+                if (sides.length > 0) {
+                    cartItem.sides = sides;
+                }
+                cart.push(cartItem);
+            }
+            updateCartUI();
+        }
+        function removeFromCart(productId) {
+            const existingItemIndex = cart.findIndex(item => item.id === productId);
+            if (existingItemIndex !== -1) {
+                cart.splice(existingItemIndex, 1);
+            }
+            updateCartUI();
+        }
+        function updateCart(productId, quantity, flavors = [], ingredients = [], customizations = [], sides = []) {
+            const existingItemIndex = cart.findIndex(item => item.id === productId);
+            if (existingItemIndex !== -1) {
+                if (quantity === 0) {
+                    cart.splice(existingItemIndex, 1);
+                } else {
+                    cart[existingItemIndex].quantity = quantity;
+                    if (flavors.length > 0) {
+                        cart[existingItemIndex].flavors = flavors;
+                    }
+                    if (ingredients.length > 0) {
+                        cart[existingItemIndex].ingredients = ingredients;
+                    }
+                    if (customizations.length > 0) {
+                        cart[existingItemIndex].customizations = customizations;
+                    }
+                    if (sides.length > 0) {
+                        cart[existingItemIndex].sides = sides;
+                    }
+                }
+            }
+            updateCartUI();
+        }
+        // Función para eliminar un producto del carrito
+        function removeItemFromCart(productId) {
+            const existingItemIndex = cart.findIndex(item => item.id === productId);
+            if (existingItemIndex !== -1) {
+                cart.splice(existingItemIndex, 1);
+                // Actualizar la cantidad en el menú a 0
+                const quantityElement = document.getElementById(`quantity-${productId}`);
+                if (quantityElement) {
+                    quantityElement.textContent = '0';
+                }
+                // Ocultar selector de sabores si es empanadas
+                if (productId.startsWith('desayunos-2')) {
+                    const flavorSelector = document.getElementById(`flavor-selector-${productId}`);
+                    if (flavorSelector) {
+                        flavorSelector.style.display = 'none';
+                    }
+                }
+                // Ocultar selector de ingredientes si es pizza
+                if (productId.startsWith('especiales-3')) {
+                    const ingredientSelector = document.getElementById(`ingredient-selector-${productId}`);
+                    if (ingredientSelector) {
+                        ingredientSelector.style.display = 'none';
+                    }
+                }
+                // Ocultar selector de personalización si es hamburguesa, Club House o Panini
+                if (productId.startsWith('hamburguesas-') || productId.startsWith('especiales-1') || productId.startsWith('especiales-4')) {
+                    const customizationSelector = document.getElementById(`customization-selector-${productId}`);
+                    if (customizationSelector) {
+                        customizationSelector.style.display = 'none';
+                    }
+                }
+                // Ocultar selector de contornos si es pollo
+                if (productId.startsWith('pollo-')) {
+                    const sidesSelector = document.getElementById(`sides-selector-${productId}`);
+                    if (sidesSelector) {
+                        sidesSelector.style.display = 'none';
+                    }
+                }
+                updateCartUI();
+            }
+        }
+        function updateCartUI() {
+            // Actualizar contador del carrito
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            // Actualizar items del carrito en el modal
+            cartItems.innerHTML = '';
+            let totalUSD = 0;
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart"></i>
+                        <div>No hay productos en el carrito</div>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    totalUSD += itemTotal;
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'cart-item';
+                    let detailsHTML = '';
+                    // Detalles para empanadas (sabores)
+                    if (item.flavors && item.flavors.length > 0) {
+                        detailsHTML += `<div class="cart-item-details">`;
+                        item.flavors.forEach((comboFlavors, comboIndex) => {
+                            detailsHTML += `Sabor Mini empanada ${comboIndex + 1}: ${comboFlavors.join(', ')}<br>`;
+                        });
+                        detailsHTML += `</div>`;
+                    }
+                    // Detalles para pizza (ingredientes)
+                    if (item.ingredients && item.ingredients.length > 0) {
+                        detailsHTML += `<div class="cart-item-details">`;
+                        item.ingredients.forEach((ingredient, comboIndex) => {
+                            if (ingredient !== "Ninguno") {
+                                detailsHTML += `Pizza ${comboIndex + 1}: con ${ingredient}<br>`;
+                            } else {
+                                detailsHTML += `Pizza ${comboIndex + 1}: sin ingrediente extra<br>`;
+                            }
+                        });
+                        detailsHTML += `</div>`;
+                    }
+                    // Detalles para personalizaciones (hamburguesas, Club House, Panini)
+                    if (item.customizations && item.customizations.length > 0) {
+                        detailsHTML += `<div class="cart-item-details">`;
+                        item.customizations.forEach((options, comboIndex) => {
+                            if (options.length > 0) {
+                                detailsHTML += `${item.name} ${comboIndex + 1}: ${options.join(', ')}<br>`;
+                            }
+                        });
+                        detailsHTML += `</div>`;
+                    }
+                    // Detalles para contornos (pollo)
+                    if (item.sides && item.sides.length > 0) {
+                        detailsHTML += `<div class="cart-item-details">`;
+                        item.sides.forEach((selectedSides, comboIndex) => {
+                            if (selectedSides.length > 0) {
+                                detailsHTML += `${item.name} ${comboIndex + 1}: ${selectedSides.join(', ')}<br>`;
+                            }
+                        });
+                        detailsHTML += `</div>`;
+                    }
+                    cartItemElement.innerHTML = `
+                        <div class="cart-item-info">
+                            <div class="cart-item-name"><i class="fas fa-utensils"></i> ${item.name}</div>
+                            ${detailsHTML}
+                            <div class="cart-item-price"><i class="fas fa-tag"></i> $${item.price.toFixed(2)} c/u</div>
+                        </div>
+                        <div class="cart-item-quantity">x${item.quantity}</div>
+                        <div class="cart-item-actions">
+                            <button class="remove-item" data-product="${item.id}">&times;</button>
+                        </div>
+                    `;
+                    cartItems.appendChild(cartItemElement);
+                });
+                // Agregar event listeners a los botones de eliminar
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const productId = e.target.getAttribute('data-product');
+                        removeItemFromCart(productId);
+                    });
+                });
+            }
+            const totalBS = totalUSD * tasaBCV;
+            cartTotal.innerHTML = `<i class="fas fa-dollar-sign"></i> Total: $${totalUSD.toFixed(2)} / Bs ${totalBS.toFixed(2)}`;
+            // Actualizar información de la tasa
+            const now = new Date();
+            tasaInfoElement.innerHTML = `<i class="fas fa-exchange-alt"></i> Tasa BCV: ${tasaBCV} - Actualizada a ${now.toLocaleDateString('es-ES')}`;
+        }
+        // Función para manejar el triple clic en el logo
+        function handleLogoClick() {
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastClickTime;
+            // Si han pasado más de 500ms desde el último clic, reiniciar el contador
+            if (timeDiff > 500) {
+                clickCount = 0;
+            }
+            clickCount++;
+            lastClickTime = currentTime;
+            // Si se han hecho 3 clics en menos de 500ms cada uno
+            if (clickCount === 3) {
+                // Activar o desactivar modo VIP
+                vipEnabled = !vipEnabled;
+                if (vipEnabled) {
+                    // Mostrar categoría VIP
+                    vipCategoryBtn.style.display = 'block';
+                    vipIndicator.style.display = 'block';
+                    // Crear y mostrar mensaje flotante
+                    const vipMessage = document.createElement('div');
+                    vipMessage.className = 'vip-message';
+                    vipMessage.innerHTML = '¡Usted ha desbloqueado el Menú VIP! Disfrútelo.';
+                    document.body.appendChild(vipMessage);
+                    // Esperar un momento y luego redirigir a la categoría VIP
+                    setTimeout(() => {
+                        // Simular clic en el botón VIP
+                        document.querySelector('.category-btn[data-category="vip"]').click();
+                    }, 2000);
+                    // Mostrar mensaje de confirmación
+                    alert('¡Modo VIP activado! Ahora puedes acceder a productos exclusivos.');
+                } else {
+                    // Ocultar categoría VIP
+                    vipCategoryBtn.style.display = 'none';
+                    vipIndicator.style.display = 'none';
+                    // Si estábamos en la categoría VIP, volver a desayunos
+                    const activeCategory = document.querySelector('.category-btn.active');
+                    if (activeCategory && activeCategory.getAttribute('data-category') === 'vip') {
+                        document.querySelector('.category-btn[data-category="desayunos"]').click();
+                    }
+                }
+                // Reiniciar contador
+                clickCount = 0;
+            }
+        }
+        // Event Listeners
+        viewMenuBtn.addEventListener('click', () => {
+            welcomeScreen.style.display = 'none';
+            menuScreen.style.display = 'block';
+        });
+        cartBtn.addEventListener('click', () => {
+            cartModal.style.display = 'flex';
+        });
+        closeCart.addEventListener('click', () => {
+            cartModal.style.display = 'none';
+        });
+        continueShoppingBtn.addEventListener('click', () => {
+            cartModal.style.display = 'none';
+        });
+        customerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            if (cart.length === 0) {
+                alert('Por favor agrega al menos un producto a tu pedido.');
+                return;
+            }
+            // Generar número de pedido
+            const now = new Date();
+            const dateString = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear().toString().slice(2)}`;
+            const orderNumber = `${dateString}-${phone.slice(-3)}`;
+            // Crear mensaje para WhatsApp
+            let message = `📌 *Pedido QLQestacomida*%0A%0A`;
+            message += `*Cliente:* ${name}%0A`;
+            message += `*Teléfono:* ${phone}%0A`;
+            message += `*Entrega en:* ${address}%0A`;
+            message += `*Fecha:* ${now.toLocaleDateString('es-ES')}%0A`;
+            message += `*Hora:* ${now.toLocaleTimeString('es-ES')}%0A`;
+            message += `*Pedido N°:* ${orderNumber}%0A%0A`;
+            message += `*Detalle del Pedido:*%0A`;
+            let totalUSD = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalUSD += itemTotal;
+                message += `✅ *${item.name}* x${item.quantity} = $${itemTotal.toFixed(2)}%0A`;
+                // Agregar detalles de sabores si existen
+                if (item.flavors && item.flavors.length > 0) {
+                    item.flavors.forEach((comboFlavors, comboIndex) => {
+                        message += `   Sabor Mini empanada ${comboIndex + 1}: ${comboFlavors.join(', ')}%0A`;
+                    });
+                }
+                // Agregar detalles de ingredientes si existen
+                if (item.ingredients && item.ingredients.length > 0) {
+                    item.ingredients.forEach((ingredient, comboIndex) => {
+                        if (ingredient !== "Ninguno") {
+                            message += `   Pizza ${comboIndex + 1}: con ${ingredient}%0A`;
+                        }
+                    });
+                }
+                // Agregar detalles de personalizaciones si existen
+                if (item.customizations && item.customizations.length > 0) {
+                    item.customizations.forEach((options, comboIndex) => {
+                        if (options.length > 0) {
+                            message += `   ${item.name} ${comboIndex + 1}: ${options.join(', ')}%0A`;
+                        }
+                    });
+                }
+                // Agregar detalles de contornos si existen
+                if (item.sides && item.sides.length > 0) {
+                    item.sides.forEach((selectedSides, comboIndex) => {
+                        if (selectedSides.length > 0) {
+                            message += `   ${item.name} ${comboIndex + 1}: ${selectedSides.join(', ')}%0A`;
+                        }
+                    });
+                }
+            });
+            const totalBS = totalUSD * tasaBCV;
+            message += `%0A *Total: $${totalUSD.toFixed(2)} / Bs ${totalBS.toFixed(2)}*%0A`;
+            message += ` *Tasa BCV:* ${tasaBCV} (Actualizada ${now.toLocaleDateString('es-ES')})%0A%0A`;
+            message += `¡Gracias por tu pedido! %0A*QLQestacomida*`;
+            // Abrir WhatsApp
+            window.open(`https://api.whatsapp.com/send?phone=+584242801795&text=${message}`, '_blank');
+            // Cerrar modal y resetear formulario
+            cartModal.style.display = 'none';
+            customerForm.reset();
+            // Limpiar carrito
+            cart = [];
+            updateCartUI();
+            // Resetear cantidades en el menú
+            document.querySelectorAll('[id^="quantity-"]').forEach(el => {
+                el.textContent = '0';
+            });
+            // Ocultar selectores de sabor
+            document.querySelectorAll('.flavor-selector').forEach(el => {
+                el.style.display = 'none';
+            });
+            // Ocultar selectores de ingredientes
+            document.querySelectorAll('.ingredient-selector').forEach(el => {
+                el.style.display = 'none';
+            });
+            // Ocultar selectores de personalización
+            document.querySelectorAll('.customization-selector').forEach(el => {
+                el.style.display = 'none';
+            });
+            // Ocultar selectores de contornos
+            document.querySelectorAll('.sides-selector').forEach(el => {
+                el.style.display = 'none';
+            });
+        });
+        // Inicializar con la primera categoría
+        showProducts('desayunos');
+        // Cambiar categoría
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const category = button.getAttribute('data-category');
+                showProducts(category, searchInput.value);
+            });
+        });
+        // Agregar event listener para el triple clic en el logo
+        menuLogo.addEventListener('click', handleLogoClick);
+        // También agregar event listener al logo de bienvenida
+        document.querySelector('.welcome-logo').addEventListener('click', handleLogoClick);
+        
+        // Event listeners para la búsqueda global en todas las categorías (excluyendo VIP)
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.trim();
+            
+            // Mostrar/ocultar botón de limpiar
+            if (searchTerm.length > 0) {
+                clearSearchBtn.style.display = 'block';
+                searchAllCategories(searchTerm);
+            } else {
+                clearSearchBtn.style.display = 'none';
+                // Mostrar la categoría activa cuando no hay búsqueda
+                const activeCategory = document.querySelector('.category-btn.active');
+                const category = activeCategory.getAttribute('data-category');
+                showProducts(category);
+            }
+        });
+        
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            
+            // Mostrar todos los productos de la categoría activa
+            const activeCategory = document.querySelector('.category-btn.active');
+            const category = activeCategory.getAttribute('data-category');
+            showProducts(category);
+        });
+        
+        // Función para buscar en todas las categorías (excluyendo VIP)
+        function searchAllCategories(searchTerm) {
+            productsContainer.innerHTML = '';
+            noResultsElement.style.display = 'none';
+            
+            let allResults = [];
+            let categoryNames = {
+                'desayunos': 'Desayunos',
+                'ejecutivo': 'Menú Ejecutivo',
+                'hamburguesas': 'Hamburguesas',
+                'pollo': 'Pollos',
+                'especiales': 'Especiales',
+                'cafe': 'Café',
+                'bebidas': 'Bebidas',
+                'postre': 'Postre'
+                // Excluimos 'vip' de la búsqueda
+            };
+            
+            // Buscar en todas las categorías excepto VIP
+            for (const [category, products] of Object.entries(menuData)) {
+                // Excluir categoría VIP de la búsqueda
+                if (category === 'vip') continue;
+                
+                if (category === 'ejecutivo') {
+                    // Manejar menú ejecutivo por día
+                    const dayOfWeek = getDayOfWeek();
+                    const menuItem = menuEjecutivo[dayOfWeek];
+                    
+                    if (dayOfWeek === 5 && menuItem.options) {
+                        // Viernes con opciones múltiples
+                        menuItem.options.forEach((option, index) => {
+                            if (option.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                option.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                allResults.push({
+                                    ...option,
+                                    category: category,
+                                    originalIndex: index,
+                                    categoryName: categoryNames[category]
+                                });
+                            }
+                        });
+                    } else {
+                        // Otros días con un solo plato
+                        if (menuItem.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            menuItem.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                            allResults.push({
+                                ...menuItem,
+                                category: category,
+                                originalIndex: 0,
+                                categoryName: categoryNames[category]
+                            });
+                        }
+                    }
+                } else {
+                    // Buscar en otras categorías
+                    products.forEach((product, index) => {
+                        if (product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            product.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                            allResults.push({
+                                ...product,
+                                category: category,
+                                originalIndex: index,
+                                categoryName: categoryNames[category]
+                            });
+                        }
+                    });
+                }
+            }
+            
+            // Mostrar resultados
+            if (allResults.length === 0) {
+                noResultsElement.style.display = 'block';
+                return;
+            }
+            
+            // Ordenar resultados por categoría para mejor organización
+            allResults.sort((a, b) => a.categoryName.localeCompare(b.categoryName));
+            
+            allResults.forEach(result => {
+                const productElement = document.createElement('div');
+                productElement.className = 'product';
+                productElement.innerHTML = `
+                    <div class="product-image-container">
+                        <img src="${result.image}" alt="${result.name}" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${result.name}</h3>
+                        <p class="product-description">${result.description}</p>
+                        <p class="product-price">$${result.price.toFixed(2)} / Bs ${(result.price * tasaBCV).toFixed(2)}</p>
+                        <div class="product-category-tag">${result.categoryName}</div>
+                        <div class="product-actions">
+                            <div class="quantity-selector">
+                                <button class="quantity-btn minus" data-product="${result.category}-${result.originalIndex}">-</button>
+                                <span class="quantity" id="quantity-${result.category}-${result.originalIndex}">0</span>
+                                <button class="quantity-btn plus" data-product="${result.category}-${result.originalIndex}">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Si es el producto de mini empanadas, agregar el selector de sabores
+                if (result.hasFlavors) {
+                    const flavorSelector = document.createElement('div');
+                    flavorSelector.className = 'flavor-selector';
+                    flavorSelector.id = `flavor-selector-${result.category}-${result.originalIndex}`;
+                    flavorSelector.innerHTML = `
+                        <div class="flavor-combos" id="flavor-combos-${result.category}-${result.originalIndex}">
+                            <!-- Los combos de sabores se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(flavorSelector);
+                }
+                // Si es Pizza Margherita, agregar el selector de ingredientes
+                if (result.hasIngredients) {
+                    const ingredientSelector = document.createElement('div');
+                    ingredientSelector.className = 'ingredient-selector';
+                    ingredientSelector.id = `ingredient-selector-${result.category}-${result.originalIndex}`;
+                    ingredientSelector.innerHTML = `
+                        <div class="ingredient-combos" id="ingredient-combos-${result.category}-${result.originalIndex}">
+                            <!-- Los combos de ingredientes se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(ingredientSelector);
+                }
+                // Si es Hamburguesa, Club House o Panini, agregar el selector de personalización
+                if (result.hasCustomization) {
+                    const customizationSelector = document.createElement('div');
+                    customizationSelector.className = 'customization-selector';
+                    customizationSelector.id = `customization-selector-${result.category}-${result.originalIndex}`;
+                    customizationSelector.innerHTML = `
+                        <div class="customization-combos" id="customization-combos-${result.category}-${result.originalIndex}">
+                            <!-- Los combos de personalización se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(customizationSelector);
+                }
+                // Si es Pollo, agregar el selector de contornos
+                if (result.hasSides) {
+                    const sidesSelector = document.createElement('div');
+                    sidesSelector.className = 'sides-selector';
+                    sidesSelector.id = `sides-selector-${result.category}-${result.originalIndex}`;
+                    sidesSelector.innerHTML = `
+                        <div class="sides-combos" id="sides-combos-${result.category}-${result.originalIndex}">
+                            <!-- Los combos de contornos se generarán dinámicamente -->
+                        </div>
+                    `;
+                    productElement.appendChild(sidesSelector);
+                }
+                productsContainer.appendChild(productElement);
+            });
+            
+            // Configurar event listeners para los productos encontrados
+            setupEventListenersForSearchResults();
+        }
+        
+        // Configurar event listeners para los resultados de búsqueda
+        function setupEventListenersForSearchResults() {
+            // Agregar event listeners a los botones de cantidad
+            document.querySelectorAll('.plus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = e.target.getAttribute('data-product');
+                    const quantityElement = document.getElementById(`quantity-${productId}`);
+                    let quantity = parseInt(quantityElement.textContent);
+                    quantityElement.textContent = quantity + 1;
+                    // Si es mini empanadas, actualizar selectores de sabor
+                    if (productId.startsWith('desayunos-2')) {
+                        updateEmpanadaFlavorSelectors(productId, quantity + 1);
+                    }
+                    // Si es Pizza Margherita, actualizar selectores de ingredientes
+                    if (productId.startsWith('especiales-3')) {
+                        updatePizzaIngredientSelectors(productId, quantity + 1);
+                    }
+                    // Si es Hamburguesa, Club House o Panini, actualizar selectores de personalización
+                    if (productId.startsWith('hamburguesas-') || productId.startsWith('especiales-1') || productId.startsWith('especiales-4')) {
+                        updateCustomizationSelectors(productId, quantity + 1);
+                    }
+                    // Si es Pollo, actualizar selectores de contornos
+                    if (productId.startsWith('pollo-')) {
+                        updateSidesSelectors(productId, quantity + 1);
+                    }
+                    // Agregar automáticamente al carrito
+                    addToCart(productId, quantity + 1);
+                });
+            });
+            document.querySelectorAll('.minus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = e.target.getAttribute('data-product');
+                    const quantityElement = document.getElementById(`quantity-${productId}`);
+                    let quantity = parseInt(quantityElement.textContent);
+                    if (quantity > 0) {
+                        quantityElement.textContent = quantity - 1;
+                        // Si es mini empanadas, actualizar selectores de sabor
+                        if (productId.startsWith('desayunos-2')) {
+                            updateEmpanadaFlavorSelectors(productId, quantity - 1);
+                        }
+                        // Si es Pizza Margherita, actualizar selectores de ingredientes
+                        if (productId.startsWith('especiales-3')) {
+                            updatePizzaIngredientSelectors(productId, quantity - 1);
+                        }
+                        // Si es Hamburguesa, Club House o Panini, actualizar selectores de personalización
+                        if (productId.startsWith('hamburguesas-') || productId.startsWith('especiales-1') || productId.startsWith('especiales-4')) {
+                            updateCustomizationSelectors(productId, quantity - 1);
+                        }
+                        // Si es Pollo, actualizar selectores de contornos
+                        if (productId.startsWith('pollo-')) {
+                            updateSidesSelectors(productId, quantity - 1);
+                        }
+                        // Actualizar automáticamente el carrito
+                        updateCart(productId, quantity - 1);
+                    }
+                });
+            });
+            // Event listeners para dropdowns de sabores
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('flavor-dropdown')) {
+                    const productId = e.target.getAttribute('data-product');
+                    updateCartWithFlavors(productId);
+                }
+                if (e.target.classList.contains('ingredient-checkbox')) {
+                    const productId = e.target.getAttribute('data-product');
+                    const combo = e.target.getAttribute('data-combo');
+                    const ingredient = e.target.value;
+                    // Desmarcar otros checkboxes en el mismo combo
+                    if (e.target.checked) {
+                        document.querySelectorAll(`.ingredient-checkbox[data-product="${productId}"][data-combo="${combo}"]`).forEach(cb => {
+                            if (cb !== e.target) {
+                                cb.checked = false;
+                            }
+                        });
+                    }
+                    updateCartWithIngredients(productId);
+                }
+                if (e.target.classList.contains('customization-checkbox')) {
+                    const productId = e.target.getAttribute('data-product');
+                    updateCartWithCustomizations(productId);
+                }
+                if (e.target.classList.contains('sides-checkbox')) {
+                    const productId = e.target.getAttribute('data-product');
+                    const combo = e.target.getAttribute('data-combo');
+                    updateCartWithSides(productId);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+```
